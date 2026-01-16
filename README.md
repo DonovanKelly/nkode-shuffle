@@ -18,24 +18,18 @@ Relevant implementation files:
 - `src/keypad/tower_shuffle.py`
 - `src/keypad/keypad.py`
 
-## Generating Histograms
+## Histogram Scenarios
 
-Run the histogram script directly from the repo root:
-
-```bash
-python histograms.py
-```
-
-This generates histograms under `hist/` for several Sliding Tower scenarios and prints the mean number of observations needed to break the passcode. The script only saves the histograms (no pickle output).
+The histograms below compare Sliding Tower settings across several keypad/passcode configurations. The values reflect the number of observations needed to break the nKode under each configuration.
 
 ### Scenario Parameters
 
-| Scenario | Keys (`k`) | Props (`p`) | Passcode | Complexity | Disparity | Runs |
-| --- | --- | --- | --- | --- | --- | --- |
-| baseline_k6_p8 | 6 | 8 | 4 | 4 | 4 | 5000 |
-| short_passcode_k6_p8 | 6 | 8 | 3 | 3 | 3 | 5000 |
-| dense_keypad_k8_p10 | 8 | 10 | 4 | 4 | 4 | 5000 |
-| longer_passcode_k6_p8 | 6 | 8 | 5 | 5 | 4 | 5000 |
+| Scenario | Keys (`k`) | Props (`p`) | Passcode Len | Complexity | Disparity | Runs |
+| --- | --- | --- |--------------| --- | --- | --- |
+| baseline_k6_p8 | 6 | 8 | 4            | 4 | 4 | 5000 |
+| short_passcode_k6_p8 | 6 | 8 | 3            | 3 | 3 | 5000 |
+| dense_keypad_k8_p10 | 8 | 10 | 4            | 4 | 4 | 5000 |
+| longer_passcode_k6_p8 | 6 | 8 | 5            | 5 | 4 | 5000 |
 
 ## Histograms (Observations to Break)
 
