@@ -24,12 +24,20 @@ The histograms below compare Sliding Tower settings across several keypad/passco
 
 ### Scenario Parameters
 
+Definitions:
+- **Keys (`k`)**: number of keys (rows) on the keypad.
+- **Props (`p`)**: number of properties/icons per key (columns).
+- **Passcode Len**: length of the passcode in key entries.
+- **Complexity**: minimum number of distinct within-key positions used in the passcode (e.g., prevents using only the upper-left position across keys).
+- **Disparity**: minimum number of unique property icons used in the passcode (how many distinct properties appear).
+- **Runs**: number of Monte Carlo trials used for each histogram.
+
 | Scenario | Keys (`k`) | Props (`p`) | Passcode Len | Complexity | Disparity | Runs |
-| --- | --- | --- |--------------| --- | --- | --- |
-| baseline_k6_p8 | 6 | 8 | 4            | 4 | 4 | 5000 |
-| short_passcode_k6_p8 | 6 | 8 | 3            | 3 | 3 | 5000 |
-| dense_keypad_k8_p10 | 8 | 10 | 4            | 4 | 4 | 5000 |
-| longer_passcode_k6_p8 | 6 | 8 | 5            | 5 | 4 | 5000 |
+| --- | --- | --- | --- | --- | --- | --- |
+| baseline_k6_p8 | 6 | 8 | 4 | 4 | 4 | 5000 |
+| short_passcode_k6_p8 | 6 | 8 | 3 | 3 | 3 | 5000 |
+| dense_keypad_k8_p10 | 8 | 10 | 4 | 4 | 4 | 5000 |
+| longer_passcode_k6_p8 | 6 | 8 | 5 | 5 | 4 | 5000 |
 
 ## Histograms (Observations to Break)
 
