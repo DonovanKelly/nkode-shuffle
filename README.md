@@ -52,3 +52,7 @@ If the images do not render in your viewer, open the `hist/` directory directly.
 
 ### Longer passcode
 ![longer_passcode_k6_p8](./hist/longer_passcode_k6_p8_break.png)
+
+## Conclusion
+
+Across these Sliding Tower scenarios, the only parameter that changes the number of observations needed to crack the nKode is the number of properties per key. With 8 icons per key, it consistently takes exactly 5 contiguous observations to break the code.
