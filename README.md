@@ -1,90 +1,54 @@
-# Evilnkode Project
+# Sliding Tower Shuffle Benchmarks
 
-This README provides instructions for setting up and running the `evilnkode` project using Conda, activating the environment, and executing the provided CLI scripts. It also covers how to access help for command-line options.
+This repo focuses on the Sliding Tower shuffle policy for nKode keypads and how many observations are needed to crack a passcode. The goal is to explain how the shuffle works and to visualize the distribution of observations required to break a code under different parameter settings.
 
-## Prerequisites
+## Sliding Tower Shuffle Explained
 
-- **Conda**: Ensure you have Conda installed (Miniconda or Anaconda). Download from [conda.io](https://conda.io).
+The keypad is modeled as a `k x p` matrix where:
+- `k` is the number of keys (rows).
+- `p` is the number of properties per key (columns).
 
-## Setting Up the Environment
+Each shuffle applies two steps:
+1. **Tower selection (column subset):** `TowerShuffle` maintains two towers of column indices. Each shuffle splits every tower floor into a “keep” and “discard” half, swaps the discards between towers, and rebuilds the floors. The indices in the left tower define which columns will be shuffled next.
+2. **Row shift on selected columns:** `SlidingTowerShuffleKeypad` chooses a random cyclic shift of the rows and applies it only to the columns selected by the left tower. Other columns stay fixed for that shuffle.
 
-To set up the project environment using the provided `environment.yaml` file, follow these steps:
+This produces a controlled, sliding subset of column shuffles rather than a full random permutation every time.
 
-1. **Install the environment**:
-   - Ensure you are in the project root directory where `environment.yaml` is located.
-   - Run the following command to create the `evilnkode` environment:
-     ```bash
-     conda env create -f environment.yaml
-     ```
-   - This will install all dependencies specified in `environment.yaml`.
+Relevant implementation files:
+- `src/keypad/tower_shuffle.py`
+- `src/keypad/keypad.py`
 
-## Activating the Environment
+## Generating Histograms
 
-To activate the `evilnkode` environment, run:
-
-```bash
-conda activate evilnkode
-```
-
-Once activated, your terminal prompt should change to include `(evilnkode)`, indicating the environment is active.
-
-## Running CLI Scripts
-
-The project includes two main CLI scripts: `cli.visualnkode` and `cli.benchmark_histogram`. Below are instructions to run each.
-
-### Running `cli.visualnkode`
-
-To execute the `visualnkode` CLI script:
+Run the histogram script directly from the repo root:
 
 ```bash
-python -m cli.visualnkode
+python histograms.py
 ```
 
-- This command runs the `visualnkode` module from the `cli` package.
-- To view available options and arguments, use the `-help` flag:
-  ```bash
-  python -m cli.visualnkode -help
-  ```
+This generates histograms under `hist/` for several Sliding Tower scenarios and prints the mean number of observations needed to break the passcode. The script only saves the histograms (no pickle output).
 
-### Running `cli.benchmark_histogram`
+### Scenario Parameters
 
-To execute the `benchmark_histogram` CLI script:
+| Scenario | Keys (`k`) | Props (`p`) | Passcode | Complexity | Disparity | Runs |
+| --- | --- | --- | --- | --- | --- | --- |
+| baseline_k6_p8 | 6 | 8 | 4 | 4 | 4 | 5000 |
+| short_passcode_k6_p8 | 6 | 8 | 3 | 3 | 3 | 5000 |
+| dense_keypad_k8_p10 | 8 | 10 | 4 | 4 | 4 | 5000 |
+| longer_passcode_k6_p8 | 6 | 8 | 5 | 5 | 4 | 5000 |
 
-```bash
-python -m cli.benchmark_histogram
-```
+## Histograms (Observations to Break)
 
-- This command runs the `benchmark_histogram` module, which may generate output such as benchmark results or histograms. For example, it might produce output like:
-  ```
-  File exists: output/slidingtowershufflekeypad-6-8-4-5-4-4-10000/benchmark/slidingtowershufflekeypad-6-8-4-5-4-4-10000.pkl
-  Bench SlidingTowerShuffle Break 5
-  Bench SlidingTowerShuffle Replay 5
-  ```
-- To view available options and arguments, use the `-help` flag:
-  ```bash
-  python -m cli.benchmark_histogram -help
-  ```
+If the images do not render in your viewer, open the `hist/` directory directly.
 
-## Using the `-help` Flag
+### Baseline
+![baseline_k6_p8](./hist/baseline_k6_p8_break.png)
 
-Both CLI scripts (`cli.visualnkode` and `cli.benchmark_histogram`) support a `-help` flag to display available command-line options and their descriptions. Run the following to explore options for each script:
+### Short passcode
+![short_passcode_k6_p8](./hist/short_passcode_k6_p8_break.png)
 
-```bash
-python -m cli.visualnkode -help
-python -m cli.benchmark_histogram -help
-```
+### Dense keypad
+![dense_keypad_k8_p10](./hist/dense_keypad_k8_p10_break.png)
 
-This will provide detailed information about parameters, flags, and usage for each script.
-
-## Project Structure
-
-Key files and directories in the project:
-
-- `environment.yaml`: Conda environment configuration file.
-- `cli/`: Contains CLI scripts (`visualnkode` and `benchmark_histogram`).
-- `output/`: Directory where script outputs, such as benchmark results, are stored.
-- `src/`: Source code for the project.
-- `tests/`: Test scripts for the project.
-- `requirements.txt`: Additional dependencies (if needed outside Conda).
-
-For further details, explore the project documentation in the `docs/` directory.
+### Longer passcode
+![longer_passcode_k6_p8](./hist/longer_passcode_k6_p8_break.png)

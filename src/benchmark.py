@@ -1,10 +1,13 @@
-from tqdm import tqdm
-from src.evilnkode import EvilNKode
 from dataclasses import dataclass
-from src.utils import observations, passcode_generator
-from src.keypad.keypad import BaseKeypad
 from pathlib import Path
+from typing import Optional
+
 import pickle
+from tqdm import tqdm
+
+from src.evilnkode import EvilNKode
+from src.keypad.keypad import BaseKeypad
+from src.utils import observations, passcode_generator
 
 
 @dataclass
@@ -22,16 +25,21 @@ def benchmark(
         complexity: int,
         disparity: int,
         keypad: BaseKeypad,
-        file_path: Path = '../output',
+        file_path: Optional[Path] = Path("../output"),
         overwrite: bool = False
 ) -> Benchmark:
-    shuffle_type = str(type(keypad)).lower().split('.')[-1].replace("'>", "")
-    file_name = f"{shuffle_type}-{number_of_keys}-{properties_per_key}-{passcode_len}-{max_tries_before_lockout}-{complexity}-{disparity}-{run_count}.pkl"
-    full_path = Path(file_path) / "benchmark" / file_name
-    if not overwrite and full_path.exists():
-        print(f"File exists: {full_path}")
-        with open(full_path, "rb") as fp:
-            return pickle.load(fp)
+    shuffle_type = str(type(keypad)).lower().split(".")[-1].replace("'>", "")
+    file_name = (
+        f"{shuffle_type}-{number_of_keys}-{properties_per_key}-{passcode_len}-"
+        f"{max_tries_before_lockout}-{complexity}-{disparity}-{run_count}.pkl"
+    )
+    full_path = None
+    if file_path is not None:
+        full_path = file_path / "benchmark" / file_name
+        if not overwrite and full_path.exists():
+            print(f"File exists: {full_path}")
+            with open(full_path, "rb") as fp:
+                return pickle.load(fp)
 
     iterations_to_break = []
     iterations_to_replay = []
@@ -56,7 +64,7 @@ def benchmark(
         iterations_to_replay=iterations_to_replay
     )
 
-    if file_path:
+    if full_path is not None:
         full_path.parent.mkdir(parents=True, exist_ok=True)
         with open(full_path, "wb") as fp:
             pickle.dump(benchmark_result, fp)
